@@ -37,17 +37,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
       } else {
         message = exceptionResponse as string;
       }
-    } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-      if (exception.code === 'P2002') {
-        status = HttpStatus.CONFLICT;
-        message = 'Ya existe un registro con esos datos únicos';
-      } else if (exception.code === 'P2025') {
-        status = HttpStatus.NOT_FOUND;
-        message = 'Registro no encontrado';
-      } else {
-        message = `Error de base de datos: ${exception.code}`;
+      } else if (
+        exception instanceof Error &&
+        exception.constructor.name === 'PrismaClientKnownRequestError'
+      ) {
+        const prismaError = exception as any;
+        if (prismaError.code === 'P2002') {
+          status = HttpStatus.CONFLICT;
+          message = 'Ya existe un registro con esos datos únicos';
+        } else if (prismaError.code === 'P2025') {
+          status = HttpStatus.NOT_FOUND;
+          message = 'Registro no encontrado';
+        } else {
+          message = `Error de base de datos: ${prismaError.code}`;
+        }
       }
-    }
 
     this.logger.error(
       `[${request.method}] ${request.url} → ${status}: ${message}`,
