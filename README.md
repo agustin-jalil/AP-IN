@@ -137,7 +137,7 @@ pnpm build
 pnpm start:prod
 ```
 
-La API estará disponible en: `http://localhost:3000/api/v1`
+La API estará disponible en: `http://localhost:3000`
 
 ---
 
@@ -174,25 +174,25 @@ pnpm format
 ### Auth
 | Método | URL | Auth | Descripción |
 |--------|-----|------|-------------|
-| POST | `/api/v1/auth/register` | ❌ | Registrar usuario |
-| POST | `/api/v1/auth/login` | ❌ | Iniciar sesión |
-| POST | `/api/v1/auth/refresh` | refresh token | Renovar tokens |
-| POST | `/api/v1/auth/logout` | ✅ access | Cerrar sesión |
+| POST | `/auth/register` | ❌ | Registrar usuario |
+| POST | `/auth/login` | ❌ | Iniciar sesión |
+| POST | `/auth/refresh` | refresh token | Renovar tokens |
+| POST | `/auth/logout` | ✅ access | Cerrar sesión |
 
 ### Products
 | Método | URL | Auth | Rol | Descripción |
 |--------|-----|------|-----|-------------|
-| POST | `/api/v1/products` | ✅ | Cualquiera | Crear producto |
-| GET | `/api/v1/products` | ✅ | Cualquiera | Listar con filtros |
-| GET | `/api/v1/products/:id` | ✅ | Cualquiera | Obtener uno |
-| PATCH | `/api/v1/products/:id` | ✅ | Cualquiera | Actualizar |
-| DELETE | `/api/v1/products/:id` | ✅ | ADMIN | Eliminar |
+| POST | `/products` | ✅ | Cualquiera | Crear producto |
+| GET | `/products` | ✅ | Cualquiera | Listar con filtros |
+| GET | `/products/:id` | ✅ | Cualquiera | Obtener uno |
+| PATCH | `/products/:id` | ✅ | Cualquiera | Actualizar |
+| DELETE | `/products/:id` | ✅ | ADMIN | Eliminar |
 
 ---
 
 ## 📋 Ejemplos Request/Response
 
-### POST /api/v1/auth/register
+### POST /auth/register
 
 **Request:**
 ```json
@@ -223,7 +223,7 @@ pnpm format
 
 ---
 
-### POST /api/v1/auth/login
+### POST /auth/login
 
 **Request:**
 ```json
@@ -252,7 +252,7 @@ pnpm format
 
 ---
 
-### POST /api/v1/auth/refresh
+### POST /auth/refresh
 
 **Request:**
 ```json
@@ -274,7 +274,7 @@ pnpm format
 
 ---
 
-### POST /api/v1/products
+### POST /products
 
 **Headers:** `Authorization: Bearer <accessToken>`
 
@@ -316,7 +316,7 @@ pnpm format
 
 ---
 
-### GET /api/v1/products?categoria=iPhone&stockDisponible=true&page=1&limit=5
+### GET /products?categoria=iPhone&stockDisponible=true&page=1&limit=5
 
 **Headers:** `Authorization: Bearer <accessToken>`
 
@@ -371,7 +371,7 @@ pnpm format
 
 ---
 
-### PATCH /api/v1/products/:id
+### PATCH /products/:id
 
 **Request:**
 ```json
@@ -396,7 +396,7 @@ pnpm format
 
 ---
 
-### DELETE /api/v1/products/:id (solo ADMIN)
+### DELETE /products/:id (solo ADMIN)
 
 **Response 200:**
 ```json
@@ -422,7 +422,7 @@ pnpm format
     "El precio debe ser un número decimal válido"
   ],
   "timestamp": "2025-01-15T10:30:00.000Z",
-  "path": "/api/v1/products"
+  "path": "/products"
 }
 ```
 

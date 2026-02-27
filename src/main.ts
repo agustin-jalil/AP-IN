@@ -12,9 +12,6 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
   const logger = new Logger('Bootstrap');
 
-  // Global prefix
-  app.setGlobalPrefix('api/v1');
-
   // CORS
   app.enableCors({
     origin: configService.get<string>('FRONTEND_URL', '*'),
@@ -42,7 +39,7 @@ async function bootstrap() {
   const port = configService.get<number>('PORT', 3000);
   await app.listen(port);
 
-  logger.log(`🚀 Apple Stock API corriendo en: http://localhost:${port}/api/v1`);
+  logger.log(`🚀 Apple Stock API corriendo en: http://localhost:${port}`);
 }
 
 bootstrap();

@@ -1,51 +1,36 @@
-// src/prisma/prisma.service.ts
-import {
-  Injectable,
-  OnModuleInit,
-  OnModuleDestroy,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
+// Importa el adaptador de PostgreSQL
+import { PrismaPg } from '@prisma/adapter-pg';
+// Importa el driver pg (node-postgres)
+import * as pg from 'pg';
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy
-{
-  private readonly logger = new Logger(PrismaService.name);
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
 
   constructor() {
+    // Asegúrate de que DATABASE_URL esté disponible en tu archivo .env
+    const connectionString = process.env.DATABASE_URL;
+
+    // Crea una instancia del Pool de conexión del driver
+    const pool = new pg.Pool({ connectionString });
+
+    // Crea una instancia del adaptador de Prisma
+    const adapter = new PrismaPg(pool);
+
+    // Pasa el adaptador al constructor de PrismaClient
     super({
-      log: [
-        { emit: 'event', level: 'query' },
-        { emit: 'stdout', level: 'error' },
-        { emit: 'stdout', level: 'warn' },
-      ],
+      adapter: adapter,
+      // Puedes añadir tus logs aquí si es necesario:
+      // log: ['query', 'error', 'warn'],
     });
   }
 
   async onModuleInit() {
     await this.$connect();
-    this.logger.log('✅ Conectado a PostgreSQL');
   }
 
   async onModuleDestroy() {
     await this.$disconnect();
-    this.logger.log('🔌 Desconectado de PostgreSQL');
-  }
-
-  async cleanDatabase() {
-    if (process.env.NODE_ENV === 'production') return;
-    const tablenames = await this.$queryRaw<
-      Array<{ tablename: string }>
-    >`SELECT tablename FROM pg_tables WHERE schemaname='public'`;
-
-    for (const { tablename } of tablenames) {
-      if (tablename !== '_prisma_migrations') {
-        await this.$executeRawUnsafe(
-          `TRUNCATE TABLE "public"."${tablename}" CASCADE;`,
-        );
-      }
-    }
   }
 }
