@@ -1,98 +1,493 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# 🍎 Apple Stock Backend
+> API REST profesional para gestión de inventario de productos Apple  
+> Stack: NestJS · PostgreSQL · Prisma · pnpm · JWT
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+---
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 📁 Estructura del Proyecto
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ pnpm install
+```
+apple-stock-backend/
+├── prisma/
+│   ├── schema.prisma          # Modelos de base de datos
+│   └── seed.ts                # Datos iniciales
+├── src/
+│   ├── auth/
+│   │   ├── dto/
+│   │   │   ├── register.dto.ts
+│   │   │   ├── login.dto.ts
+│   │   │   └── refresh-token.dto.ts
+│   │   ├── guards/
+│   │   │   ├── jwt-access.guard.ts
+│   │   │   └── jwt-refresh.guard.ts
+│   │   ├── strategies/
+│   │   │   ├── jwt-access.strategy.ts
+│   │   │   └── jwt-refresh.strategy.ts
+│   │   ├── interfaces/
+│   │   │   └── jwt-payload.interface.ts
+│   │   ├── auth.controller.ts
+│   │   ├── auth.service.ts
+│   │   └── auth.module.ts
+│   ├── users/
+│   │   ├── users.service.ts
+│   │   └── users.module.ts
+│   ├── products/
+│   │   ├── dto/
+│   │   │   ├── create-product.dto.ts
+│   │   │   ├── update-product.dto.ts
+│   │   │   └── filter-products.dto.ts
+│   │   ├── products.controller.ts
+│   │   ├── products.service.ts
+│   │   └── products.module.ts
+│   ├── prisma/
+│   │   ├── prisma.module.ts
+│   │   └── prisma.service.ts
+│   ├── common/
+│   │   ├── decorators/
+│   │   │   ├── current-user.decorator.ts
+│   │   │   └── roles.decorator.ts
+│   │   ├── filters/
+│   │   │   └── http-exception.filter.ts
+│   │   ├── guards/
+│   │   │   └── roles.guard.ts
+│   │   ├── interceptors/
+│   │   │   └── response.interceptor.ts
+│   │   └── middleware/
+│   │       └── logging.middleware.ts
+│   ├── config/
+│   │   └── env.validation.ts
+│   ├── app.module.ts
+│   └── main.ts
+├── frontend-integration/
+│   └── api.ts                 # Cliente HTTP listo para React/Next.js
+├── .env.example
+├── nest-cli.json
+├── package.json
+├── tsconfig.json
+└── README.md
 ```
 
-## Compile and run the project
+---
+
+## ⚡ Instalación Completa
+
+### 1. Requisitos previos
 
 ```bash
-# development
-$ pnpm run start
+# Node.js >= 18
+node --version
 
-# watch mode
-$ pnpm run start:dev
+# pnpm
+npm install -g pnpm
 
-# production mode
-$ pnpm run start:prod
+# PostgreSQL corriendo localmente
 ```
 
-## Run tests
+### 2. Clonar e instalar dependencias
 
 ```bash
-# unit tests
-$ pnpm run test
+git clone <tu-repo>
+cd apple-stock-backend
 
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+pnpm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 3. Configurar variables de entorno
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+cp .env.example .env
+# Editá .env con tus datos reales
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### 4. Configurar PostgreSQL y ejecutar migraciones
 
-## Resources
+```bash
+# Crear la base de datos (si no existe)
+createdb apple_stock_db
+# o desde psql:
+# CREATE DATABASE apple_stock_db;
 
-Check out a few resources that may come in handy when working with NestJS:
+# Ejecutar migraciones
+pnpm prisma migrate dev --name init
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+# Generar el cliente de Prisma
+pnpm prisma:generate
+```
 
-## Support
+### 5. Ejecutar el seed (datos iniciales)
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+pnpm prisma:seed
+```
 
-## Stay in touch
+Crea:
+- Usuario admin: `admin@applestock.com` / `Admin1234!`
+- Usuario vendedor: `vendedor@applestock.com` / `Vendedor1234!`
+- 8 productos de ejemplo
+- 1 sucursal
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 6. Levantar el proyecto
 
-## License
+```bash
+# Desarrollo (con hot reload)
+pnpm start:dev
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# Producción
+pnpm build
+pnpm start:prod
+```
+
+La API estará disponible en: `http://localhost:3000/api/v1`
+
+---
+
+## 📦 Comandos pnpm Completos
+
+```bash
+# Instalar todo de cero
+pnpm install
+
+# Desarrollo
+pnpm start:dev
+
+# Build producción
+pnpm build
+pnpm start:prod
+
+# Prisma
+pnpm prisma migrate dev --name <nombre>    # Nueva migración
+pnpm prisma migrate deploy                  # Migración en producción
+pnpm prisma:generate                        # Regenerar cliente
+pnpm prisma:studio                          # GUI de base de datos
+pnpm prisma:seed                            # Datos iniciales
+pnpm prisma db push                         # Sincronizar schema sin migración
+
+# Linting
+pnpm lint
+pnpm format
+```
+
+---
+
+## 🔌 Endpoints
+
+### Auth
+| Método | URL | Auth | Descripción |
+|--------|-----|------|-------------|
+| POST | `/api/v1/auth/register` | ❌ | Registrar usuario |
+| POST | `/api/v1/auth/login` | ❌ | Iniciar sesión |
+| POST | `/api/v1/auth/refresh` | refresh token | Renovar tokens |
+| POST | `/api/v1/auth/logout` | ✅ access | Cerrar sesión |
+
+### Products
+| Método | URL | Auth | Rol | Descripción |
+|--------|-----|------|-----|-------------|
+| POST | `/api/v1/products` | ✅ | Cualquiera | Crear producto |
+| GET | `/api/v1/products` | ✅ | Cualquiera | Listar con filtros |
+| GET | `/api/v1/products/:id` | ✅ | Cualquiera | Obtener uno |
+| PATCH | `/api/v1/products/:id` | ✅ | Cualquiera | Actualizar |
+| DELETE | `/api/v1/products/:id` | ✅ | ADMIN | Eliminar |
+
+---
+
+## 📋 Ejemplos Request/Response
+
+### POST /api/v1/auth/register
+
+**Request:**
+```json
+{
+  "email": "nuevo@email.com",
+  "nombre": "María García",
+  "password": "Segura1234!",
+  "role": "VENDEDOR"
+}
+```
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "550e8400-e29b-41d4-a716-446655440000",
+      "email": "nuevo@email.com",
+      "nombre": "María García",
+      "role": "VENDEDOR"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+```
+
+---
+
+### POST /api/v1/auth/login
+
+**Request:**
+```json
+{
+  "email": "admin@applestock.com",
+  "password": "Admin1234!"
+}
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "user": {
+      "id": "...",
+      "email": "admin@applestock.com",
+      "nombre": "Administrador",
+      "role": "ADMIN"
+    },
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ..."
+  }
+}
+```
+
+---
+
+### POST /api/v1/auth/refresh
+
+**Request:**
+```json
+{
+  "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "accessToken": "eyJ...",
+    "refreshToken": "eyJ..."
+  }
+}
+```
+
+---
+
+### POST /api/v1/products
+
+**Headers:** `Authorization: Bearer <accessToken>`
+
+**Request:**
+```json
+{
+  "modelo": "iPhone 15 Pro Max",
+  "categoria": "iPhone",
+  "memoria": "256GB",
+  "color": "Titanio Azul",
+  "precio": 1399.99,
+  "bateria": 100,
+  "usado": false,
+  "stock": 10
+}
+```
+
+**Response 201:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "a1b2c3d4-e5f6-...",
+    "modelo": "iPhone 15 Pro Max",
+    "categoria": "iPhone",
+    "memoria": "256GB",
+    "color": "Titanio Azul",
+    "precio": "1399.99",
+    "bateria": 100,
+    "usado": false,
+    "stock": 10,
+    "proveedorId": null,
+    "sucursalId": null,
+    "createdAt": "2025-01-15T10:30:00.000Z",
+    "updatedAt": "2025-01-15T10:30:00.000Z"
+  }
+}
+```
+
+---
+
+### GET /api/v1/products?categoria=iPhone&stockDisponible=true&page=1&limit=5
+
+**Headers:** `Authorization: Bearer <accessToken>`
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "items": [
+      {
+        "id": "...",
+        "modelo": "iPhone 15 Pro",
+        "categoria": "iPhone",
+        "memoria": "256GB",
+        "color": "Titanio Negro",
+        "precio": "1299.99",
+        "bateria": 100,
+        "usado": false,
+        "stock": 15,
+        "createdAt": "2025-01-10T08:00:00.000Z",
+        "updatedAt": "2025-01-10T08:00:00.000Z"
+      }
+    ],
+    "meta": {
+      "total": 3,
+      "page": 1,
+      "limit": 5,
+      "totalPages": 1,
+      "hasNextPage": false,
+      "hasPrevPage": false
+    }
+  }
+}
+```
+
+---
+
+### Filtros disponibles GET /products
+
+```
+?categoria=iPhone              # iPhone | iPad | Mac | Watch | AirPods | Accesorios
+&modelo=iPhone 15              # Búsqueda parcial case-insensitive
+&memoria=256GB
+&color=Negro                   # Búsqueda parcial case-insensitive
+&usado=false
+&minPrice=500
+&maxPrice=1500
+&stockDisponible=true          # Solo productos con stock > 0
+&page=1
+&limit=10
+```
+
+---
+
+### PATCH /api/v1/products/:id
+
+**Request:**
+```json
+{
+  "stock": 5,
+  "precio": 1199.99
+}
+```
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "id": "...",
+    "stock": 5,
+    "precio": "1199.99",
+    ...
+  }
+}
+```
+
+---
+
+### DELETE /api/v1/products/:id (solo ADMIN)
+
+**Response 200:**
+```json
+{
+  "success": true,
+  "data": {
+    "message": "Producto \"abc123\" eliminado correctamente"
+  }
+}
+```
+
+---
+
+### Error response (ejemplo)
+
+```json
+{
+  "success": false,
+  "statusCode": 422,
+  "message": "Error de validación",
+  "errors": [
+    "La categoría debe ser uno de: iPhone, iPad, Mac, Watch, AirPods, Accesorios",
+    "El precio debe ser un número decimal válido"
+  ],
+  "timestamp": "2025-01-15T10:30:00.000Z",
+  "path": "/api/v1/products"
+}
+```
+
+---
+
+## 🛡️ Seguridad JWT
+
+El flujo es:
+1. Login → recibe `accessToken` (15 min) + `refreshToken` (7 días)
+2. Cada request → `Authorization: Bearer <accessToken>`
+3. Al expirar el access → POST `/auth/refresh` con el `refreshToken` en el body
+4. Obtenés nuevos tokens y seguís sin interrupciones
+
+Los refresh tokens se **hashean con bcrypt** antes de guardarse en la DB, así aunque alguien robe la DB no puede usarlos.
+
+---
+
+## 🚀 Deploy en Producción
+
+```bash
+# 1. Variables de entorno (no commitear nunca el .env)
+# Configurá en Railway, Render, DigitalOcean, etc.
+
+# 2. Correr migraciones (nunca migrate dev en prod)
+pnpm prisma migrate deploy
+
+# 3. Build y arrancar
+pnpm build
+pnpm start:prod
+```
+
+### Docker (opcional)
+
+```dockerfile
+FROM node:20-alpine
+WORKDIR /app
+RUN npm install -g pnpm
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+COPY . .
+RUN pnpm prisma generate
+RUN pnpm build
+EXPOSE 3000
+CMD ["pnpm", "start:prod"]
+```
+
+---
+
+## 🔮 Diseño Preparado Para Escalar
+
+El schema de Prisma ya incluye las tablas base para:
+
+- **Proveedores**: Tabla `Proveedor` con relación a `Producto`
+- **Sucursales**: Tabla `Sucursal`, los productos pertenecen a una sucursal
+- **Movimientos de stock**: Tabla `MovimientoStock` (ENTRADA, SALIDA, AJUSTE, TRANSFERENCIA)
+- **Historial de cambios**: Tabla `HistorialProducto` para auditoría completa
+
+Solo hace falta desarrollar los módulos correspondientes.
+
+---
+
+## 🔗 Integración con Frontend
+
+Ver el archivo `frontend-integration/api.ts` para un cliente HTTP completo con:
+- Auto-refresh de tokens
+- TypeScript tipado
+- Ejemplos con React Query
+- Ejemplos con Next.js App Router

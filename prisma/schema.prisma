@@ -1,14 +1,170 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// prisma/schema.prisma
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
+  engineType = "client"
 }
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// ENUMS
+// ─────────────────────────────────────────────
+
+enum Role {
+  ADMIN
+  VENDEDOR
+}
+
+enum Categoria {
+  iPhone
+  iPad
+  Mac
+  Watch
+  AirPods
+  Accesorios
+}
+
+// ─────────────────────────────────────────────
+// USERS
+// ─────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  nombre       String
+  passwordHash String   @map("password_hash")
+  role         Role     @default(VENDEDOR)
+  refreshToken String?  @map("refresh_token")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relaciones futuras
+  movimientos MovimientoStock[]
+
+  @@index([email])
+  @@map("users")
+}
+
+// ─────────────────────────────────────────────
+// PRODUCTOS
+// ─────────────────────────────────────────────
+
+model Producto {
+  id        String    @id @default(uuid())
+  modelo    String
+  categoria Categoria
+  memoria   String
+  color     String
+  precio    Decimal   @db.Decimal(10, 2)
+  bateria   Int?
+  usado     Boolean   @default(false)
+  stock     Int       @default(0)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  // Relaciones futuras
+  movimientos MovimientoStock[]
+  historial   HistorialProducto[]
+  proveedor   Proveedor?          @relation(fields: [proveedorId], references: [id])
+  proveedorId String?             @map("proveedor_id")
+  sucursal    Sucursal?           @relation(fields: [sucursalId], references: [id])
+  sucursalId  String?             @map("sucursal_id")
+
+  @@index([categoria])
+  @@index([modelo])
+  @@index([memoria])
+  @@index([color])
+  @@index([usado])
+  @@index([precio])
+  @@index([stock])
+  @@index([proveedorId])
+  @@index([sucursalId])
+  @@map("productos")
+}
+
+// ─────────────────────────────────────────────
+// MOVIMIENTOS DE STOCK (preparado para futuro)
+// ─────────────────────────────────────────────
+
+enum TipoMovimiento {
+  ENTRADA
+  SALIDA
+  AJUSTE
+  TRANSFERENCIA
+}
+
+model MovimientoStock {
+  id          String         @id @default(uuid())
+  tipo        TipoMovimiento
+  cantidad    Int
+  motivo      String?
+  productoId  String         @map("producto_id")
+  producto    Producto       @relation(fields: [productoId], references: [id])
+  userId      String         @map("user_id")
+  user        User           @relation(fields: [userId], references: [id])
+  sucursalId  String?        @map("sucursal_id")
+  sucursal    Sucursal?      @relation(fields: [sucursalId], references: [id])
+  createdAt   DateTime       @default(now()) @map("created_at")
+
+  @@index([productoId])
+  @@index([userId])
+  @@index([createdAt])
+  @@map("movimientos_stock")
+}
+
+// ─────────────────────────────────────────────
+// HISTORIAL DE CAMBIOS (auditoría)
+// ─────────────────────────────────────────────
+
+model HistorialProducto {
+  id         String   @id @default(uuid())
+  productoId String   @map("producto_id")
+  producto   Producto @relation(fields: [productoId], references: [id])
+  campo      String
+  valorAntes String?  @map("valor_antes")
+  valorDespues String? @map("valor_despues")
+  createdAt  DateTime @default(now()) @map("created_at")
+
+  @@index([productoId])
+  @@map("historial_productos")
+}
+
+// ─────────────────────────────────────────────
+// PROVEEDORES (preparado para futuro)
+// ─────────────────────────────────────────────
+
+model Proveedor {
+  id        String     @id @default(uuid())
+  nombre    String
+  contacto  String?
+  email     String?    @unique
+  telefono  String?
+  isActive  Boolean    @default(true) @map("is_active")
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @updatedAt @map("updated_at")
+  productos Producto[]
+
+  @@map("proveedores")
+}
+
+// ─────────────────────────────────────────────
+// SUCURSALES (preparado para futuro)
+// ─────────────────────────────────────────────
+
+model Sucursal {
+  id          String            @id @default(uuid())
+  nombre      String
+  direccion   String?
+  ciudad      String?
+  isActive    Boolean           @default(true) @map("is_active")
+  createdAt   DateTime          @default(now()) @map("created_at")
+  updatedAt   DateTime          @updatedAt @map("updated_at")
+  productos   Producto[]
+  movimientos MovimientoStock[]
+
+  @@map("sucursales")
 }
